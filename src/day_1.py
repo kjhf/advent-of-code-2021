@@ -1,20 +1,19 @@
-from os import environ
-import dotenv
-import requests
+from src.common import get_input
 
 
-def day_1(session_token):
-    # Get the input
-    url = 'https://adventofcode.com/2021/day/1/input'
-    input_lines = requests.get(url, cookies={'session': session_token}).text.split('\n')
-    print(input_lines)
+def day_1(slider: int):
+    input_lines = get_input(day=1)
 
-    # Count the number of times a depth measurement increases from the previous measurement.
-    # (There is no measurement before the first measurement.)
+    # Count the number of times the sum of measurements in this sliding window of (slider) increases from the previous sum
+    # Part 1 is an increase one-by-one, part 2 is slider of 3.
     larger = 0
-    for i in range(0, len(input_lines) - 2):  # -2 as final is '' and does not have a change
-        this_el = int(input_lines[i])
-        next_el = int(input_lines[i+1])
+    for i in range(0, len(input_lines) - slider):  # Count back the slider amount
+        this_el = 0
+        next_el = 0
+        for j in range(0, slider):
+            this_el += int(input_lines[i + j])
+            next_el += int(input_lines[i + j + 1])
+
         if next_el > this_el:
             larger += 1
 
@@ -22,5 +21,7 @@ def day_1(session_token):
 
 
 if __name__ == '__main__':
-    dotenv.load_dotenv()
-    day_1(environ.get('SESSION_TOKEN'))
+    print("Part 1:")
+    day_1(1)
+    print("\nPart 2:")
+    day_1(3)
